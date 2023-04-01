@@ -5,12 +5,14 @@
 			alt="Build Status" 
 		/>
 	</a>
+    <!--
 	<a href="https://codeclimate.com/github/glhd/guidepost/test_coverage" target="_blank">
 		<img 
 			src="https://api.codeclimate.com/v1/badges/f597a6e8d9f968a55f03/test_coverage" 
 			alt="Coverage Status" 
 		/>
 	</a>
+    -->
 	<a href="https://packagist.org/packages/glhd/guidepost" target="_blank">
         <img 
             src="https://poser.pugx.org/glhd/guidepost/v/stable" 
@@ -31,11 +33,15 @@
     </a>
 </div>
 
-# guidepost
+# Guidepost
 
-Please replace `glhd/guidepost` with the package name in this file, 
-the change log, and the `composer.json` file before continuing.
+Guidepost is a utility library for Laravel that makes it easy to quickly reference
+specific models in the database from your code.
 
 ## Installation
 
+Coming soon :)
+
 ## Usage
+
+Coming soon :)
