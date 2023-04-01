@@ -3,7 +3,6 @@
 namespace Glhd\Guidepost\Tests;
 
 use Glhd\Guidepost\Support\GuidepostServiceProvider;
-use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;

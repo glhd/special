@@ -2,9 +2,7 @@
 
 namespace Glhd\Guidepost\Support;
 
-use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 
 class GuidepostServiceProvider extends ServiceProvider
@@ -25,7 +23,7 @@ class GuidepostServiceProvider extends ServiceProvider
 		$this->mergeConfigFrom($this->packageConfigFile(), 'guidepost');
 	}
 	
-	protected function bootConfig() : self
+	protected function bootConfig(): self
 	{
 		$this->publishes([
 			$this->packageConfigFile() => $this->app->configPath('guidepost.php'),

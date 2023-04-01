@@ -5,14 +5,12 @@
 			alt="Build Status" 
 		/>
 	</a>
-    <!--
 	<a href="https://codeclimate.com/github/glhd/guidepost/test_coverage" target="_blank">
 		<img 
-			src="https://api.codeclimate.com/v1/badges/f597a6e8d9f968a55f03/test_coverage" 
+			src="https://api.codeclimate.com/v1/badges/423cc29ed6ebf117e656/test_coverage" 
 			alt="Coverage Status" 
 		/>
 	</a>
-    -->
 	<a href="https://packagist.org/packages/glhd/guidepost" target="_blank">
         <img 
             src="https://poser.pugx.org/glhd/guidepost/v/stable" 
