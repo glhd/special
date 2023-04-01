@@ -2,14 +2,14 @@
 
 namespace Glhd\Guidepost\Tests\Feature;
 
-use App\Models\Vendor;
 use Glhd\Guidepost\Tests\Guideposts\Vendors;
 use Glhd\Guidepost\Tests\Guideposts\VendorsById;
 use Glhd\Guidepost\Tests\Guideposts\VendorsByName;
 use Glhd\Guidepost\Tests\Guideposts\VendorsBySlug;
+use Glhd\Guidepost\Tests\Guideposts\VendorsWithDefaultAttributes;
 use Glhd\Guidepost\Tests\Models\Price;
+use Glhd\Guidepost\Tests\Models\Vendor;
 use Glhd\Guidepost\Tests\TestCase;
-use Illuminate\Container\Container;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 
@@ -113,5 +113,19 @@ class GuidepostTest extends TestCase
 		// Subsequent requests should only take one
 		$best_buy = VendorsBySlug::BestBuy->get();
 		$this->assertCount(3, DB::getQueryLog());
+	}
+	
+	public function test_it_uses_factories(): void
+	{
+		$best_buy = VendorsBySlug::BestBuy->get();
+		
+		$this->assertEquals('Best Buy', $best_buy->name);
+		$this->assertNotEmpty($best_buy->slug);
+	}
+	
+	public function test_attribute_annotations(): void
+	{
+		// TODO
+		$this->assertEquals('Amazon.com', VendorsWithDefaultAttributes::Amazon->get()->name);
 	}
 }

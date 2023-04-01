@@ -32,7 +32,8 @@
       "tests/TestCase.php"
     ],
     "psr-4": {
-      "Glhd\\Guidepost\\Tests\\": "tests/"
+      "Glhd\\Guidepost\\Tests\\": "tests/",
+      "Glhd\\Guidepost\\Tests\\Database\\Factories\\": "tests/database/factories/"
     }
   },
   "scripts": {
