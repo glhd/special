@@ -1,6 +1,6 @@
 <?php
 
-namespace Glhd\LaravelPackageTemplate\Support;
+namespace Glhd\Guidepost\Support;
 
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Facades\Blade;
@@ -18,16 +18,16 @@ class PackageServiceProvider extends ServiceProvider
 	
 	public function register()
 	{
-		$this->mergeConfigFrom($this->packageConfigFile(), 'laravel-package-template');
+		$this->mergeConfigFrom($this->packageConfigFile(), 'guidepost');
 	}
 	
 	protected function bootViews() : self
 	{
-		$this->loadViewsFrom($this->packageViewsDirectory(), 'laravel-package-template');
+		$this->loadViewsFrom($this->packageViewsDirectory(), 'guidepost');
 		
 		$this->publishes([
-			$this->packageViewsDirectory() => $this->app->resourcePath('views/vendor/laravel-package-template'),
-		], 'laravel-package-template-views');
+			$this->packageViewsDirectory() => $this->app->resourcePath('views/vendor/guidepost'),
+		], 'guidepost-views');
 		
 		return $this;
 	}
@@ -35,7 +35,7 @@ class PackageServiceProvider extends ServiceProvider
 	protected function bootBladeComponents() : self
 	{
 		if (version_compare($this->app->version(), '8.0.0', '>=')) {
-			Blade::componentNamespace('Glhd\\LaravelPackageTemplate\\Components', 'laravel-package-template');
+			Blade::componentNamespace('Glhd\\Guidepost\\Components', 'guidepost');
 		}
 		
 		return $this;
@@ -44,8 +44,8 @@ class PackageServiceProvider extends ServiceProvider
 	protected function bootConfig() : self
 	{
 		$this->publishes([
-			$this->packageConfigFile() => $this->app->configPath('laravel-package-template.php'),
-		], 'laravel-package-template-config');
+			$this->packageConfigFile() => $this->app->configPath('guidepost.php'),
+		], 'guidepost-config');
 		
 		return $this;
 	}

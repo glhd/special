@@ -1,5 +1,5 @@
 {
-  "name": "glhd/laravel-package-template",
+  "name": "glhd/guidepost",
   "description": "",
   "keywords": [
     "laravel"
@@ -23,7 +23,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Glhd\\LaravelPackageTemplate\\": "src/"
+      "Glhd\\Guidepost\\": "src/"
     }
   },
   "autoload-dev": {
@@ -31,7 +31,7 @@
       "tests/TestCase.php"
     ],
     "psr-4": {
-      "Glhd\\LaravelPackageTemplate\\Tests\\": "tests/"
+      "Glhd\\Guidepost\\Tests\\": "tests/"
     }
   },
   "scripts": {
@@ -41,7 +41,7 @@
   "extra": {
     "laravel": {
       "providers": [
-        "Glhd\\LaravelPackageTemplate\\Support\\PackageServiceProvider"
+        "Glhd\\Guidepost\\Support\\PackageServiceProvider"
       ]
     }
   },
