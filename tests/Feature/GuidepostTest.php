@@ -2,9 +2,14 @@
 
 namespace Glhd\Guidepost\Tests\Feature;
 
+use App\Models\Vendor;
+use Glhd\Guidepost\Tests\Guideposts\Vendors;
+use Glhd\Guidepost\Tests\Guideposts\VendorsById;
+use Glhd\Guidepost\Tests\Guideposts\VendorsByName;
 use Glhd\Guidepost\Tests\Guideposts\VendorsBySlug;
 use Glhd\Guidepost\Tests\Models\Price;
 use Glhd\Guidepost\Tests\TestCase;
+use Illuminate\Container\Container;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 
@@ -73,5 +78,40 @@ class GuidepostTest extends TestCase
 		
 		$this->assertCount(2, $prices);
 		$this->assertTrue($prices->where('vendor_id', VendorsBySlug::Amazon->getKey())->isEmpty());
+	}
+	
+	public function test_model_name_inference(): void
+	{
+		$vendor = Vendors::BestBuy->get();
+		
+		$this->assertInstanceOf(Vendor::class, $vendor);
+	}
+	
+	public function test_id_based_enums(): void
+	{
+		$this->assertEquals(99, VendorsById::BestBuy->getKey());
+		$this->assertEquals(199, VendorsById::Amazon->getKey());
+	}
+	
+	public function test_custom_key_column(): void
+	{
+		$this->assertEquals('Best Buy', VendorsByName::BestBuy->get()->name);
+		$this->assertEquals('Amazon', VendorsByName::Amazon->get()->name);
+	}
+	
+	public function test_it_uses_cache(): void
+	{
+		DB::enableQueryLog();
+		
+		// Initial request should take two queries
+		$best_buy = VendorsBySlug::BestBuy->get();
+		$this->assertCount(2, DB::getQueryLog());
+		
+		// Forget our locally saved singleton (emulate a new request)
+		VendorsBySlug::BestBuy->forgetSingleton();
+		
+		// Subsequent requests should only take one
+		$best_buy = VendorsBySlug::BestBuy->get();
+		$this->assertCount(3, DB::getQueryLog());
 	}
 }

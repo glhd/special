@@ -9,14 +9,23 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
+use RuntimeException;
 
 trait Guidepost
 {
-	/**
-	 * Implement this method to tell Guidepost what model it's going to be
-	 * retrieving from the database.
-	 */
-	abstract public function modelClass(): string;
+	public function modelClass(): string
+	{
+		$basename = Str::of(static::class)->classBasename();
+		$name = $basename->singular();
+		
+		foreach (['\\App', '\\App\\Models'] as $prefix) {
+			if (class_exists($model_class = "{$prefix}\\{$name}")) {
+				return $model_class;
+			}
+		}
+		
+		throw new RuntimeException("Unable to infer model name for '{$basename}' guidepost (tried to find a '{$name}' model but could not).");
+	}
 	
 	/**
 	 * Get a singleton instance of the matching model
