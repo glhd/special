@@ -2,9 +2,9 @@
 
 namespace Glhd\Guidepost\Tests\Feature;
 
-use Glhd\Guidepost\Guidepost;
+use Glhd\Guidepost\Tests\Guideposts\VendorsBySlug;
+use Glhd\Guidepost\Tests\Models\Price;
 use Glhd\Guidepost\Tests\TestCase;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 
@@ -16,22 +16,22 @@ class GuidepostTest extends TestCase
 	{
 		DB::enableQueryLog();
 		
-		$best_buy = Vendors::BestBuy->get();
-		$amazon = Vendors::Amazon->get();
+		$best_buy = VendorsBySlug::BestBuy->get();
+		$amazon = VendorsBySlug::Amazon->get();
 		
 		// This will run 2 queries each, first check for existing record, and then create a new one
 		$this->assertCount(4, DB::getQueryLog());
 		
 		// This shouldn't trigger any more queries
-		Vendors::BestBuy->get();
-		Vendors::BestBuy->singleton();
-		Vendors::Amazon->get();
-		Vendors::Amazon->singleton();
+		VendorsBySlug::BestBuy->get();
+		VendorsBySlug::BestBuy->singleton();
+		VendorsBySlug::Amazon->get();
+		VendorsBySlug::Amazon->singleton();
 		$this->assertCount(4, DB::getQueryLog());
 		
 		// This should only trigger 2 more queries
-		Vendors::BestBuy->fresh();
-		Vendors::Amazon->fresh();
+		VendorsBySlug::BestBuy->fresh();
+		VendorsBySlug::Amazon->fresh();
 		$this->assertCount(6, DB::getQueryLog());
 		
 		$this->assertEquals('best-buy', $best_buy->slug);
@@ -42,8 +42,8 @@ class GuidepostTest extends TestCase
 	
 	public function test_relation_constraints(): void
 	{
-		$best_buy = Vendors::BestBuy->get();
-		$amazon = Vendors::Amazon->get();
+		$best_buy = VendorsBySlug::BestBuy->get();
+		$amazon = VendorsBySlug::Amazon->get();
 		
 		$best_buy->prices()->create([
 			'product' => 'PS4',
@@ -61,40 +61,17 @@ class GuidepostTest extends TestCase
 		]);
 		
 		$prices = Price::query()
-			->tap(Vendors::BestBuy->constrain(...))
+			->tap(VendorsBySlug::BestBuy->constrain(...))
 			->get();
 		
 		$this->assertCount(2, $prices);
-		$this->assertTrue($prices->where('vendor_id', Vendors::Amazon->getKey())->isEmpty());
-	}
-}
-
-enum Vendors: string
-{
-	use Guidepost;
-	
-	case BestBuy = 'best-buy';
-	
-	case Amazon = 'amazon';
-	
-	public function modelClass(): string
-	{
-		return Vendor::class;
-	}
-}
-
-class Vendor extends Model
-{
-	public function prices()
-	{
-		return $this->hasMany(Price::class);
-	}
-}
-
-class Price extends Model
-{
-	public function vendor()
-	{
-		return $this->belongsTo(Vendor::class);
+		$this->assertTrue($prices->where('vendor_id', VendorsBySlug::Amazon->getKey())->isEmpty());
+		
+		$prices = Price::query()
+			->forGuidepost(VendorsBySlug::BestBuy)
+			->get();
+		
+		$this->assertCount(2, $prices);
+		$this->assertTrue($prices->where('vendor_id', VendorsBySlug::Amazon->getKey())->isEmpty());
 	}
 }

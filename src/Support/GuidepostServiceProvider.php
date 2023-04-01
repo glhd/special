@@ -3,6 +3,7 @@
 namespace Glhd\Guidepost\Support;
 
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 
@@ -13,6 +14,10 @@ class GuidepostServiceProvider extends ServiceProvider
 		// require_once __DIR__.'/helpers.php';
 		
 		$this->bootConfig();
+		
+		Builder::macro('forGuidepost', function($guidepost) {
+			return $guidepost->constrain($this);
+		});
 	}
 	
 	public function register()

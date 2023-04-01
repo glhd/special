@@ -6,5 +6,10 @@
         <entry key="LaravelIdeaSettings.switchedToPackageDevelopment" value="true" />
       </map>
     </option>
+    <option name="helperCode">
+      <LaravelHelperCodeSettings>
+        <option name="modelsCreateHighOrderCollectionProxies" value="true" />
+      </LaravelHelperCodeSettings>
+    </option>
   </component>
 </project>
