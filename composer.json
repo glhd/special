@@ -12,11 +12,12 @@
   ],
   "license": "MIT",
   "require": {
-    "illuminate/support": "^8.0|^9.0",
+    "illuminate/support": "^8|^9|^10|dev-master",
+    "illuminate/database": "^8|^9|^10|dev-master",
     "ext-json": "*"
   },
   "require-dev": {
-    "orchestra/testbench": "^6.21|^7.0",
+    "orchestra/testbench": "^6.21|^7.0|^8.1",
     "friendsofphp/php-cs-fixer": "^3.0",
     "mockery/mockery": "^1.3",
     "phpunit/phpunit": "^9.5"
@@ -41,7 +42,7 @@
   "extra": {
     "laravel": {
       "providers": [
-        "Glhd\\Guidepost\\Support\\PackageServiceProvider"
+          "Glhd\\Guidepost\\Support\\GuidepostServiceProvider"
       ]
     }
   },
