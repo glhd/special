@@ -2,6 +2,7 @@
 
 namespace Glhd\Guidepost\Tests\Feature;
 
+use Glhd\Guidepost\Exceptions\GuidepostModelNotFound;
 use Glhd\Guidepost\Tests\Guideposts\Vendors;
 use Glhd\Guidepost\Tests\Guideposts\VendorsById;
 use Glhd\Guidepost\Tests\Guideposts\VendorsByName;
@@ -11,6 +12,7 @@ use Glhd\Guidepost\Tests\Models\Price;
 use Glhd\Guidepost\Tests\Models\Vendor;
 use Glhd\Guidepost\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 
 class GuidepostTest extends TestCase
@@ -125,7 +127,26 @@ class GuidepostTest extends TestCase
 	
 	public function test_attribute_annotations(): void
 	{
-		// TODO
 		$this->assertEquals('Amazon.com', VendorsWithDefaultAttributes::Amazon->get()->name);
+	}
+	
+	public function test_fail_when_missing_triggers_exception_when_missing(): void
+	{
+		Config::set('guidepost.fail_when_missing', true);
+		
+		$this->expectException(GuidepostModelNotFound::class);
+		
+		VendorsBySlug::BestBuy->get();
+	}
+	
+	public function test_fail_when_missing_does_not_trigger_exception_when_present(): void
+	{
+		Config::set('guidepost.fail_when_missing', true);
+		
+		Vendor::factory(['slug' => 'best-buy'])->create();
+		
+		$vendor = VendorsBySlug::BestBuy->get();
+		
+		$this->assertEquals('best-buy', $vendor->slug);
 	}
 }

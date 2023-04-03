@@ -2,17 +2,27 @@
 
 namespace Glhd\Guidepost;
 
+use Glhd\Guidepost\Exceptions\GuidepostModelNotFound;
+use Glhd\Guidepost\Support\ValueHelper;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Database\Query\Builder;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\App;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
+use Illuminate\Support\Traits\ForwardsCalls;
 use RuntimeException;
 
 trait Guidepost
 {
+	use ForwardsCalls;
+	
+	public function __call(string $name, array $arguments)
+	{
+		return $this->forwardCallTo($this->get(), $name, $arguments);
+	}
+	
 	public function modelClass(): string
 	{
 		$basename = Str::of(static::class)->classBasename();
@@ -64,25 +74,15 @@ trait Guidepost
 	 */
 	public function fresh(): Model
 	{
-		$key = $this->cacheKey();
+		$model = $this->model()->firstOrNew($this->attributes(), $this->values());
 		
-		if ($id = Cache::get($key)) {
-			return $this->model()->find($id);
+		if (! $model->exists && config('guidepost.fail_when_missing', true)) {
+			throw new GuidepostModelNotFound($this);
 		}
 		
-		$fresh = $this->firstOrCreate();
+		$model->save();
 		
-		Cache::put($key, $fresh->getKey());
-		
-		return $fresh;
-	}
-	
-	/**
-	 * Load the model or create it for the first time
-	 */
-	public function firstOrCreate(): Model
-	{
-		return $this->model()->firstOrCreate($this->attributes(), $this->values());
+		return $model;
 	}
 	
 	/**
@@ -110,27 +110,7 @@ trait Guidepost
 	
 	protected function values(): array
 	{
-		$values = [];
-		
-		if ($name = $this->getNameColumn()) {
-			$values[$name] = $this->nameToAttribute($this->name);
-		}
-		
-		// If we're running tests, let's use the factory to set up test data
-		if (App::runningUnitTests() && $factory = $this->factory()) {
-			$values = $factory->raw($values);
-			
-			// If we haven't configured a name column, we'll try a couple common attributes
-			if (! $this->getNameColumn()) {
-				foreach (['name', 'display_name', 'label', 'title', 'description'] as $attribute) {
-					if (array_key_exists($attribute, $values)) {
-						$values[$attribute] = $this->nameToAttribute($this->name);
-					}
-				}
-			}
-		}
-		
-		return $values;
+		return Arr::except(ValueHelper::getValuesFor($this), [$this->getKeyColumn()]);
 	}
 	
 	protected function getKeyColumn(): string
@@ -140,34 +120,9 @@ trait Guidepost
 			: config('guidepost.default_string_key_name', 'slug');
 	}
 	
-	protected function getNameColumn(): ?string
-	{
-		return config('guidepost.default_name_column');
-	}
-	
-	protected function nameToAttribute(string $name): mixed
-	{
-		return Str::headline($name);
-	}
-	
 	protected function valueToAttribute($value): mixed
 	{
 		return $value;
-	}
-	
-	protected function factory(): ?Factory
-	{
-		$class_name = $this->modelClass();
-		
-		if (method_exists($class_name, 'newFactory') && $factory = $class_name::newFactory()) {
-			return $factory;
-		}
-		
-		if (class_exists(Factory::resolveFactoryName($class_name))) {
-			return Factory::factoryForModel($class_name);
-		}
-		
-		return null;
 	}
 	
 	protected function model(): Model

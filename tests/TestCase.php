@@ -5,6 +5,7 @@ namespace Glhd\Guidepost\Tests;
 use Glhd\Guidepost\Support\GuidepostServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use Orchestra\Testbench\TestCase as Orchestra;
 
@@ -23,6 +24,8 @@ abstract class TestCase extends Orchestra
 				->prepend('\\Glhd\\Guidepost\\Tests\\Database\\Factories\\')
 				->toString();
 		});
+		
+		Config::set('guidepost.fail_when_missing', false);
 	}
 	
 	protected function getPackageProviders($app)
