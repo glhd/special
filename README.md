@@ -31,7 +31,7 @@
     </a>
 </div>
 
-# “Special” Enums
+# Special ✨
 
 **Special** is a utility library for Laravel that makes it possible to use
 Eloquent model-backed enums. Some database models are just… special…
