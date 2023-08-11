@@ -17,7 +17,7 @@ class ValueHelper
 	}
 	
 	/**
-	 * @param \Glhd\src\EloquentBacking $enum
+	 * @param \Glhd\Special\EloquentBacking $enum
 	 */
 	public function __construct(
 		protected BackedEnum $enum
