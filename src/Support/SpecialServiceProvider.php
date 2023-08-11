@@ -11,9 +11,8 @@ class SpecialServiceProvider extends ServiceProvider
 	{
 		$this->bootConfig();
 		
-		Builder::macro('special', function($special_enum) {
-			return $special_enum->constrain($this);
-		});
+		Builder::macro('special', fn($special_enum) => $special_enum->constrain($this));
+		Builder::macro('hasSpecial', fn($special_enum) => $special_enum->constrain($this));
 	}
 	
 	public function register()

@@ -33,8 +33,19 @@
 
 # Special ✨
 
-**Special** is a utility library for Laravel that makes it possible to use
-Eloquent model-backed enums. Some database models are just… special…
+Sometimes, certain database records are just **special ✨** and you need to
+reference them inside your code. Things like a few special partners or vendors
+that have special handling in a few places; or special entries that need their
+own special artisan commands run from time-to-time.
+
+special ✨ lets you use [backed enums](https://www.php.net/manual/en/language.enumerations.backed.php)
+to reference Eloquent models. Rather than backing your enum with a string or
+integer, think of it as backing your enum with a database record.
+
+If the record is missing, you can let special ✨ automatically create it for
+you. This is especially great in testing, where you may have a few special
+records that need to exist for a few special tests, but you don't want to 
+track which tests need to run special seeders at setup.
 
 ## Installation
 

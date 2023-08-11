@@ -7,7 +7,7 @@
   "authors": [
     {
       "name": "Chris Morrell",
-      "homepage": "http://www.cmorrell.com"
+      "homepage": "https://www.cmorrell.com"
     }
   ],
   "license": "MIT",
@@ -24,7 +24,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Glhd\\Special\\": "Special/"
+      "Glhd\\Special\\": "src/"
     }
   },
   "autoload-dev": {

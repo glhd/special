@@ -5,11 +5,9 @@ namespace Glhd\Special;
 use Glhd\Special\Exceptions\BackingModelNotFound;
 use Glhd\Special\Support\ValueHelper;
 use Illuminate\Container\Container;
-use Illuminate\Contracts\Database\Query\Builder;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Illuminate\Support\Traits\ForwardsCalls;
 use RuntimeException;
@@ -20,7 +18,7 @@ trait EloquentBacking
 	
 	public function __call(string $name, array $arguments)
 	{
-		return $this->forwardCallTo($this->get(), $name, $arguments);
+		return $this->forwardCallTo($this->singleton(), $name, $arguments);
 	}
 	
 	public function modelClass(): string
@@ -74,13 +72,17 @@ trait EloquentBacking
 	 */
 	public function fresh(): Model
 	{
-		$model = $this->model()->firstOrNew($this->attributes(), $this->values());
+		$attributes = $this->attributes();
 		
-		if (! $model->exists && config('glhd-special.fail_when_missing', true)) {
-			throw new BackingModelNotFound($this);
+		$builder = $this->model()->newQuery();
+		
+		if (! $model = $builder->where($attributes)->first()) {
+			if (config('glhd-special.fail_when_missing', true)) {
+				throw new BackingModelNotFound($this);
+			}
+			
+			$model = $builder->create(array_merge($attributes, $this->values()));
 		}
-		
-		$model->save();
 		
 		return $model;
 	}
@@ -94,11 +96,15 @@ trait EloquentBacking
 	}
 	
 	/**
-	 * Apply foreign key constraints to a query builder
+	 * Apply key/foreign key constraints to a query builder
 	 */
 	public function constrain(Builder $query): Builder
 	{
-		return $query->where($this->model()->getForeignKey(), '=', $this->getKey());
+		$key = $query->getModel()::class === $this->modelClass()
+			? $this->model()->getKeyName()
+			: $this->model()->getForeignKey();
+		
+		return $query->where($key, '=', $this->getKey());
 	}
 	
 	protected function attributes(): array

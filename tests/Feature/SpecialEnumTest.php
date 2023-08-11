@@ -69,17 +69,27 @@ class SpecialEnumTest extends TestCase
 		
 		$prices = Price::query()
 			->tap(VendorsBySlug::BestBuy->constrain(...))
+			->dumpRawSql()
 			->get();
 		
 		$this->assertCount(2, $prices);
 		$this->assertTrue($prices->where('vendor_id', VendorsBySlug::Amazon->getKey())->isEmpty());
 		
 		$prices = Price::query()
-			->special(VendorsBySlug::BestBuy)
+			->hasSpecial(VendorsBySlug::BestBuy)
 			->get();
 		
 		$this->assertCount(2, $prices);
 		$this->assertTrue($prices->where('vendor_id', VendorsBySlug::Amazon->getKey())->isEmpty());
+	}
+	
+	public function test_eloquent_macro(): void
+	{
+		$via_trait = VendorsBySlug::BestBuy->get();
+		
+		$via_macro = Vendor::special(VendorsBySlug::BestBuy)->sole();
+		
+		$this->assertTrue($via_trait->is($via_macro));
 	}
 	
 	public function test_model_name_inference(): void

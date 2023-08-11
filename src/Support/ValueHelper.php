@@ -17,7 +17,7 @@ class ValueHelper
 	}
 	
 	/**
-	 * @param \Glhd\Special\EloquentBacking $enum
+	 * @param \Glhd\src\EloquentBacking $enum
 	 */
 	public function __construct(
 		protected BackedEnum $enum
@@ -66,6 +66,7 @@ class ValueHelper
 		$class_name = $this->enum->modelClass();
 		
 		// TODO: We need to account for `newFactory()` on models, but it's protected...
+		// TODO: But generally overriding `newFactory()` is uncommon, so it's OK to figure this out later
 		// if (method_exists($class_name, 'newFactory') && $factory = $class_name::newFactory()) {
 		// 	return $factory;
 		// }
