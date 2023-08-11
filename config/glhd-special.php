@@ -6,7 +6,7 @@ return [
 	| Default `int` column
 	|--------------------------------------------------------------------------
 	|
-	| Guidepost guesses column names based on the type of value that your enum
+	| We guess column names based on the type of value that your enum
 	| is backed by. If the enum is backed by an integer, we will use this key
 	| name (usually `id` if you're mapping enums to primary keys).
 	|
@@ -19,7 +19,7 @@ return [
 	| Default `string` column
 	|--------------------------------------------------------------------------
 	|
-	| Guidepost guesses column names based on the type of value that your enum
+	| We guess column names based on the type of value that your enum
 	| is backed by. If the enum is backed by a string, we will use this key
 	| name (often `slug` or `key` or some other unique column).
 	|
@@ -32,7 +32,7 @@ return [
 	| How to handle missing records
 	|--------------------------------------------------------------------------
 	|
-	| When a model is missing from the database, you can configure guidepost
+	| When a model is missing from the database, you can configure the package
 	| to either create it for you, or throw an error. Usually you want to
 	| automatically create missing records when running tests, but throw in
 	| production.

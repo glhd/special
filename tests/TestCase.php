@@ -1,8 +1,8 @@
 <?php
 
-namespace Glhd\Guidepost\Tests;
+namespace Glhd\Special\Tests;
 
-use Glhd\Guidepost\Support\GuidepostServiceProvider;
+use Glhd\Special\Support\SpecialServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
@@ -21,17 +21,17 @@ abstract class TestCase extends Orchestra
 			return Str::of($model_class)
 				->classBasename()
 				->append('Factory')
-				->prepend('\\Glhd\\Guidepost\\Tests\\Database\\Factories\\')
+				->prepend('\\Glhd\\Special\\Tests\\Database\\Factories\\')
 				->toString();
 		});
 		
-		Config::set('guidepost.fail_when_missing', false);
+		Config::set('glhd-special.fail_when_missing', false);
 	}
 	
 	protected function getPackageProviders($app)
 	{
 		return [
-			GuidepostServiceProvider::class,
+			SpecialServiceProvider::class,
 		];
 	}
 	

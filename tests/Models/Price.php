@@ -1,6 +1,6 @@
 <?php
 
-namespace Glhd\Guidepost\Tests\Models;
+namespace Glhd\Special\Tests\Models;
 
 use Illuminate\Database\Eloquent\Model;
 

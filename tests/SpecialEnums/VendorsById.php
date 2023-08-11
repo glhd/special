@@ -1,13 +1,13 @@
 <?php
 
-namespace Glhd\Guidepost\Tests\Guideposts;
+namespace Glhd\Special\Tests\SpecialEnums;
 
-use Glhd\Guidepost\Guidepost;
-use Glhd\Guidepost\Tests\Models\Vendor;
+use Glhd\Special\EloquentBacking;
+use Glhd\Special\Tests\Models\Vendor;
 
 enum VendorsById: int
 {
-	use Guidepost;
+	use EloquentBacking;
 	
 	case BestBuy = 99;
 	

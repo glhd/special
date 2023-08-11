@@ -1,6 +1,6 @@
 <?php
 
-namespace Glhd\Guidepost;
+namespace Glhd\Special;
 
 use Attribute;
 

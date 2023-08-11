@@ -1,21 +1,21 @@
 <?php
 
-namespace Glhd\Guidepost\Tests\Feature;
+namespace Glhd\Special\Tests\Feature;
 
-use Glhd\Guidepost\Exceptions\GuidepostModelNotFound;
-use Glhd\Guidepost\Tests\Guideposts\Vendors;
-use Glhd\Guidepost\Tests\Guideposts\VendorsById;
-use Glhd\Guidepost\Tests\Guideposts\VendorsByName;
-use Glhd\Guidepost\Tests\Guideposts\VendorsBySlug;
-use Glhd\Guidepost\Tests\Guideposts\VendorsWithDefaultAttributes;
-use Glhd\Guidepost\Tests\Models\Price;
-use Glhd\Guidepost\Tests\Models\Vendor;
-use Glhd\Guidepost\Tests\TestCase;
+use Glhd\Special\Exceptions\BackingModelNotFound;
+use Glhd\Special\Tests\SpecialEnums\Vendors;
+use Glhd\Special\Tests\SpecialEnums\VendorsById;
+use Glhd\Special\Tests\SpecialEnums\VendorsByName;
+use Glhd\Special\Tests\SpecialEnums\VendorsBySlug;
+use Glhd\Special\Tests\SpecialEnums\VendorsWithDefaultAttributes;
+use Glhd\Special\Tests\Models\Price;
+use Glhd\Special\Tests\Models\Vendor;
+use Glhd\Special\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 
-class GuidepostTest extends TestCase
+class SpecialEnumTest extends TestCase
 {
 	use RefreshDatabase;
 	
@@ -75,7 +75,7 @@ class GuidepostTest extends TestCase
 		$this->assertTrue($prices->where('vendor_id', VendorsBySlug::Amazon->getKey())->isEmpty());
 		
 		$prices = Price::query()
-			->forGuidepost(VendorsBySlug::BestBuy)
+			->special(VendorsBySlug::BestBuy)
 			->get();
 		
 		$this->assertCount(2, $prices);
@@ -132,16 +132,16 @@ class GuidepostTest extends TestCase
 	
 	public function test_fail_when_missing_triggers_exception_when_missing(): void
 	{
-		Config::set('guidepost.fail_when_missing', true);
+		Config::set('glhd-special.fail_when_missing', true);
 		
-		$this->expectException(GuidepostModelNotFound::class);
+		$this->expectException(BackingModelNotFound::class);
 		
 		VendorsBySlug::BestBuy->get();
 	}
 	
 	public function test_fail_when_missing_does_not_trigger_exception_when_present(): void
 	{
-		Config::set('guidepost.fail_when_missing', true);
+		Config::set('glhd-special.fail_when_missing', true);
 		
 		Vendor::factory(['slug' => 'best-buy'])->create();
 		

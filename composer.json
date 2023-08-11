@@ -1,5 +1,5 @@
 {
-  "name": "glhd/guidepost",
+  "name": "glhd/special",
   "description": "",
   "keywords": [
     "laravel"
@@ -24,7 +24,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Glhd\\Guidepost\\": "src/"
+      "Glhd\\Special\\": "Special/"
     }
   },
   "autoload-dev": {
@@ -32,8 +32,8 @@
       "tests/TestCase.php"
     ],
     "psr-4": {
-      "Glhd\\Guidepost\\Tests\\": "tests/",
-      "Glhd\\Guidepost\\Tests\\Database\\Factories\\": "tests/database/factories/"
+      "Glhd\\Special\\Tests\\": "tests/",
+      "Glhd\\Special\\Tests\\Database\\Factories\\": "tests/database/factories/"
     }
   },
   "scripts": {
@@ -43,7 +43,7 @@
   "extra": {
     "laravel": {
       "providers": [
-          "Glhd\\Guidepost\\Support\\GuidepostServiceProvider"
+          "Glhd\\Special\\Support\\SpecialServiceProvider"
       ]
     }
   },

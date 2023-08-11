@@ -1,16 +1,16 @@
 <?php
 
-namespace Glhd\Guidepost\Tests\Guideposts;
+namespace Glhd\Special\Tests\SpecialEnums;
 
-use Glhd\Guidepost\Guidepost;
-use Glhd\Guidepost\Tests\Models\Vendor;
+use Glhd\Special\EloquentBacking;
+use Glhd\Special\Tests\Models\Vendor;
 
 // This is to test the class name inference
 class_alias(Vendor::class, '\\App\\Models\\Vendor');
 
 enum Vendors: string
 {
-	use Guidepost;
+	use EloquentBacking;
 	
 	case BestBuy = 'best-buy';
 	

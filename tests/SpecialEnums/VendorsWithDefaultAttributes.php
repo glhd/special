@@ -1,14 +1,14 @@
 <?php
 
-namespace Glhd\Guidepost\Tests\Guideposts;
+namespace Glhd\Special\Tests\SpecialEnums;
 
-use Glhd\Guidepost\DefaultAttributes;
-use Glhd\Guidepost\Guidepost;
-use Glhd\Guidepost\Tests\Models\Vendor;
+use Glhd\Special\DefaultAttributes;
+use Glhd\Special\EloquentBacking;
+use Glhd\Special\Tests\Models\Vendor;
 
 enum VendorsWithDefaultAttributes: string
 {
-	use Guidepost;
+	use EloquentBacking;
 	
 	#[DefaultAttributes(['name' => 'Best Buy'])]
 	case BestBuy = 'best-buy';

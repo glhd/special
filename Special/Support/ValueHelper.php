@@ -1,9 +1,9 @@
 <?php
 
-namespace Glhd\Guidepost\Support;
+namespace Glhd\Special\Support;
 
 use BackedEnum;
-use Glhd\Guidepost\DefaultAttributes;
+use Glhd\Special\DefaultAttributes;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
@@ -17,7 +17,7 @@ class ValueHelper
 	}
 	
 	/**
-	 * @param \Glhd\Guidepost\Guidepost $enum
+	 * @param \Glhd\Special\EloquentBacking $enum
 	 */
 	public function __construct(
 		protected BackedEnum $enum

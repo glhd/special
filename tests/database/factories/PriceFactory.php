@@ -1,9 +1,9 @@
 <?php
 
-namespace Glhd\Guidepost\Tests\Database\Factories;
+namespace Glhd\Special\Tests\Database\Factories;
 
-use Glhd\Guidepost\Tests\Models\Price;
-use Glhd\Guidepost\Tests\Models\Vendor;
+use Glhd\Special\Tests\Models\Price;
+use Glhd\Special\Tests\Models\Vendor;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
 

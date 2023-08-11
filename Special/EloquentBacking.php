@@ -1,9 +1,9 @@
 <?php
 
-namespace Glhd\Guidepost;
+namespace Glhd\Special;
 
-use Glhd\Guidepost\Exceptions\GuidepostModelNotFound;
-use Glhd\Guidepost\Support\ValueHelper;
+use Glhd\Special\Exceptions\BackingModelNotFound;
+use Glhd\Special\Support\ValueHelper;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -14,7 +14,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Traits\ForwardsCalls;
 use RuntimeException;
 
-trait Guidepost
+trait EloquentBacking
 {
 	use ForwardsCalls;
 	
@@ -34,7 +34,7 @@ trait Guidepost
 			}
 		}
 		
-		throw new RuntimeException("Unable to infer model name for '{$basename}' guidepost (tried to find a '{$name}' model but could not).");
+		throw new RuntimeException("Unable to infer model name for '{$basename}' special enum (tried to find a '{$name}' model but could not).");
 	}
 	
 	/**
@@ -76,8 +76,8 @@ trait Guidepost
 	{
 		$model = $this->model()->firstOrNew($this->attributes(), $this->values());
 		
-		if (! $model->exists && config('guidepost.fail_when_missing', true)) {
-			throw new GuidepostModelNotFound($this);
+		if (! $model->exists && config('glhd-special.fail_when_missing', true)) {
+			throw new BackingModelNotFound($this);
 		}
 		
 		$model->save();
@@ -116,8 +116,8 @@ trait Guidepost
 	protected function getKeyColumn(): string
 	{
 		return is_int($this->value)
-			? config('guidepost.default_int_key_name', 'id')
-			: config('guidepost.default_string_key_name', 'slug');
+			? config('glhd-special.default_int_key_name', 'id')
+			: config('glhd-special.default_string_key_name', 'slug');
 	}
 	
 	protected function valueToAttribute($value): mixed
@@ -134,6 +134,6 @@ trait Guidepost
 	
 	protected function cacheKey(): string
 	{
-		return sprintf('guidepost:%s:%s', $this->modelClass(), $this->value);
+		return sprintf('glhd-special:%s:%s', $this->modelClass(), $this->value);
 	}
 }
