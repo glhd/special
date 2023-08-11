@@ -3,13 +3,13 @@
 namespace Glhd\Special\Tests\Feature;
 
 use Glhd\Special\Exceptions\BackingModelNotFound;
+use Glhd\Special\Tests\Models\Price;
+use Glhd\Special\Tests\Models\Vendor;
 use Glhd\Special\Tests\SpecialEnums\Vendors;
 use Glhd\Special\Tests\SpecialEnums\VendorsById;
 use Glhd\Special\Tests\SpecialEnums\VendorsByName;
 use Glhd\Special\Tests\SpecialEnums\VendorsBySlug;
 use Glhd\Special\Tests\SpecialEnums\VendorsWithDefaultAttributes;
-use Glhd\Special\Tests\Models\Price;
-use Glhd\Special\Tests\Models\Vendor;
 use Glhd\Special\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
