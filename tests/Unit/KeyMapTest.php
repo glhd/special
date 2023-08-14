@@ -90,6 +90,8 @@ class KeyMapTest extends TestCase
 		$value ??= random_int(1, PHP_INT_MAX);
 		$type = get_debug_type($value);
 		
+		$value = var_export($value, true);
+		
 		$fqcn = "\\{$namespace}\\{$class}";
 		
 		$src = <<<PHP
