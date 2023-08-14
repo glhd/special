@@ -119,17 +119,17 @@ trait EloquentBacking
 	{
 		return array_merge(
 			$this->attributes(),
-			$this->extractedValues(),
 			$this->values(),
+			$this->createWith(),
 		);
 	}
 	
-	protected function extractedValues(): array
+	protected function values(): array
 	{
 		return Arr::except(ValueHelper::getValuesFor($this), [$this->getKeyColumn()]);
 	}
 	
-	protected function values(): array
+	protected function createWith(): array
 	{
 		return [];
 	}
