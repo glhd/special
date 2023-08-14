@@ -12,6 +12,7 @@ use Glhd\Special\Tests\SpecialEnums\VendorsBySlug;
 use Glhd\Special\Tests\SpecialEnums\VendorsWithDefaultAttributes;
 use Glhd\Special\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 
@@ -110,20 +111,40 @@ class SpecialEnumTest extends TestCase
 		$this->assertEquals('Amazon', VendorsByName::Amazon->get()->name);
 	}
 	
-	public function test_it_uses_cache(): void
+	public function test_it_uses_container(): void
 	{
 		DB::enableQueryLog();
 		
-		// Initial request should take two queries
+		// Initial request should take two queries (select then insert)
 		$best_buy = VendorsBySlug::BestBuy->get();
 		$this->assertCount(2, DB::getQueryLog());
 		
 		// Forget our locally saved singleton (emulate a new request)
 		VendorsBySlug::BestBuy->forgetSingleton();
 		
-		// Subsequent requests should only take one
+		// Subsequent requests should only take one (select)
 		$best_buy = VendorsBySlug::BestBuy->get();
 		$this->assertCount(3, DB::getQueryLog());
+	}
+	
+	public function test_it_uses_cache_for_keys(): void
+	{
+		DB::enableQueryLog();
+		
+		$this->assertEmpty(Cache::get('glhd-special:keymap', []));
+		
+		// Initial request should take two queries (select then insert)
+		VendorsBySlug::BestBuy->getKey();
+		$this->assertCount(2, DB::getQueryLog());
+		
+		// Forget our locally saved singleton (emulate a new request)
+		VendorsBySlug::BestBuy->forgetSingleton();
+		
+		// Subsequent requests should use cache
+		VendorsBySlug::BestBuy->getKey();
+		$this->assertCount(2, DB::getQueryLog());
+		
+		$this->assertCount(1, Cache::get('glhd-special:keymap', []));
 	}
 	
 	public function test_it_uses_factories(): void

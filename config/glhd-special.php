@@ -3,6 +3,32 @@
 return [
 	/*
 	|--------------------------------------------------------------------------
+	| Key caching
+	|--------------------------------------------------------------------------
+	|
+	| By default, we will cache the primary keys of all special enums for one
+	| hour. Due to the nature of these models, this is likely to be quite safe.
+	| Set the TTL to 0 to disable this behavior.
+	|
+	*/
+	
+	'cache_ttl' => 3600,
+	
+	/*
+	|--------------------------------------------------------------------------
+	| Cache size limit
+	|--------------------------------------------------------------------------
+	|
+	| By default, we only keep 50 primary keys in cache. This prevents the
+	| cache from growing too large (especially if you set the TTL very high).
+	| You can adjust this or set the limit to 0 to never prune.
+	|
+	*/
+	
+	'cache_limit' => 50,
+	
+	/*
+	|--------------------------------------------------------------------------
 	| Default `int` column
 	|--------------------------------------------------------------------------
 	|

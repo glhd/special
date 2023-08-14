@@ -3,6 +3,7 @@
 namespace Glhd\Special;
 
 use Glhd\Special\Exceptions\BackingModelNotFound;
+use Glhd\Special\Support\KeyMap;
 use Glhd\Special\Support\ValueHelper;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Database\Eloquent\Builder;
@@ -92,7 +93,9 @@ trait EloquentBacking
 	 */
 	public function getKey()
 	{
-		return $this->singleton()->getKey();
+		return Container::getInstance()
+			->make(KeyMap::class)
+			->get($this);
 	}
 	
 	/**
