@@ -73,16 +73,14 @@ trait EloquentBacking
 	 */
 	public function fresh(): Model
 	{
-		$attributes = $this->attributes();
-		
 		$builder = $this->model()->newQuery();
 		
-		if (! $model = $builder->where($attributes)->first()) {
+		if (! $model = $builder->where($this->attributes())->first()) {
 			if (config('glhd-special.fail_when_missing', true)) {
 				throw new BackingModelNotFound($this);
 			}
 			
-			$model = $builder->create(array_merge($attributes, $this->values()));
+			$model = $builder->create($this->attributesForCreation());
 		}
 		
 		return $model;
@@ -117,9 +115,23 @@ trait EloquentBacking
 		];
 	}
 	
-	protected function values(): array
+	protected function attributesForCreation(): array
+	{
+		return array_merge(
+			$this->attributes(),
+			$this->extractedValues(),
+			$this->values(),
+		);
+	}
+	
+	protected function extractedValues(): array
 	{
 		return Arr::except(ValueHelper::getValuesFor($this), [$this->getKeyColumn()]);
+	}
+	
+	protected function values(): array
+	{
+		return [];
 	}
 	
 	protected function getKeyColumn(): string
