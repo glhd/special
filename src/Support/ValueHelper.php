@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
 use ReflectionClassConstant;
+use Throwable;
 
 class ValueHelper
 {
@@ -63,17 +64,21 @@ class ValueHelper
 	
 	protected function factory(): ?Factory
 	{
-		$class_name = $this->enum->modelClass();
-		
-		// TODO: We need to account for `newFactory()` on models, but it's protected...
-		// TODO: But generally overriding `newFactory()` is uncommon, so it's OK to figure this out later
-		// if (method_exists($class_name, 'newFactory') && $factory = $class_name::newFactory()) {
-		// 	return $factory;
-		// }
-		
-		// Then, try the Factory resolver
-		if (class_exists(Factory::resolveFactoryName($class_name))) {
-			return Factory::factoryForModel($class_name);
+		try {
+			$class_name = (string) $this->enum->modelClass();
+			
+			// TODO: We need to account for `newFactory()` on models, but it's protected...
+			// TODO: But generally overriding `newFactory()` is uncommon, so it's OK to figure this out later
+			// if (method_exists($class_name, 'newFactory') && $factory = $class_name::newFactory()) {
+			// 	return $factory;
+			// }
+			
+			// Then, try the Factory resolver
+			if (class_exists(Factory::resolveFactoryName($class_name))) {
+				return Factory::factoryForModel($class_name);
+			}
+		} catch (Throwable) {
+			// If there's an issue finding the factory, that's OK. We'll just ignore it.
 		}
 		
 		return null;
