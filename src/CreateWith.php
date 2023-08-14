@@ -5,7 +5,7 @@ namespace Glhd\Special;
 use Attribute;
 
 #[Attribute]
-class DefaultAttributes
+class CreateWith
 {
 	public function __construct(
 		public array $attributes

@@ -3,7 +3,7 @@
 namespace Glhd\Special\Support;
 
 use BackedEnum;
-use Glhd\Special\DefaultAttributes;
+use Glhd\Special\CreateWith;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
@@ -53,7 +53,7 @@ class ValueHelper
 	protected function getDefaultAttributes(): array
 	{
 		$defaults = (new ReflectionClassConstant($this->enum::class, $this->enum->name))
-			->getAttributes(DefaultAttributes::class);
+			->getAttributes(CreateWith::class);
 		
 		if (! count($defaults)) {
 			return [];

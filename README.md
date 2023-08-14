@@ -31,18 +31,19 @@
     </a>
 </div>
 
-# Special ✨
+# Special✨
 
-Sometimes, certain database records are just **special ✨** and you need to
-reference them inside your code. Things like a few special partners or vendors
-that have special handling in a few places; or special entries that need their
-own special artisan commands run from time-to-time.
+Sometimes, certain database records are just **special✨**, and you need to
+reference them inside your code.
 
-special ✨ lets you use [backed enums](https://www.php.net/manual/en/language.enumerations.backed.php)
+You might have a few special vendors that have special handling in a few 
+special places, and maybe their own special artisan commands run from time-to-time.
+
+special✨ lets you use [backed enums](https://www.php.net/manual/en/language.enumerations.backed.php)
 to reference Eloquent models. Rather than backing your enum with a string or
 integer, think of it as backing your enum with a database record.
 
-If the record is missing, you can let special ✨ automatically create it for
+If the record is missing, you can let special✨ automatically create it for
 you. This is especially great in testing, where you may have a few special
 records that need to exist for a few special tests, but you don't want to 
 track which tests need to run special seeders at setup.
@@ -56,7 +57,11 @@ composer require glhd/special
 ## Usage
 
 To start, create a new enum and use the `EloquentBacking` trait provided by 
-this package.
+this package. 
+
+You can **optionally** add a `CreateWith` attribute to any of your enum cases, 
+and special✨ will use those values to automatically create the model record
+for you if it's missing.
 
 ```php
 use Glhd\Special\EloquentBacking;
@@ -65,16 +70,16 @@ enum SpecialOrganizations: string
 {
 	use EloquentBacking;
 	
-	#[DefaultAttributes(['name' => 'Laravel', 'url' => 'https://laravel.com/'])]
+	#[CreateWith(['name' => 'Laravel', 'url' => 'https://laravel.com/'])]
 	case Laravel = 'laravel';
 	
-	#[DefaultAttributes(['name' => 'Spatie', 'url' => 'https://spatie.be/'])]
+	#[CreateWith(['name' => 'Spatie', 'url' => 'https://spatie.be/'])]
 	case Spatie = 'spatie';
 	
-	#[DefaultAttributes(['name' => 'Thunk', 'url' => 'http://thunk.dev/'])]
+	#[CreateWith(['name' => 'Thunk', 'url' => 'http://thunk.dev/'])]
 	case Thunk = 'kathunk';
 	
-	// If your enum name is the same as the model name, this is optional
+	// If your enum name is the same as the model name, this is optional.
 	public function modelClass(): string
 	{
 		return Organization::class;
@@ -82,7 +87,10 @@ enum SpecialOrganizations: string
 }
 ```
 
-Now, you can use those enums to access the backing models:
+Now, you can use those enums to access the backing models. By default,
+strings are assumed to be a `slug` column, and integers are assumed to
+be the `id` column, but this can be configured at the project level or
+the individual enum level.
 
 ```php
 SpecialOrganizations::Laravel->toArray();
@@ -110,4 +118,26 @@ SpecialOrganizations::Laravel->singleton();
 
 // Get a fresh copy — always loads from the DB
 SpecialOrganizations::Laravel->fresh();
+```
+
+Often times you want to use a special enum to look up related models. We
+provide a few convenient ways to do this:
+
+```php
+PullRequests::query()
+  ->hasSpecial(SpecialOrganizations::Laravel)
+  ->dumpRawSql();
+
+// select *
+// from `pull_requests`
+// where `organization_id` = 1337
+```
+
+Or, you can use a special enum to constrain an existing query.
+The exact same query can be generated with:
+
+```php
+SpecialOrganizations::Laravel
+  ->constrain(PullRequests::query())
+  ->dumpRawSql();
 ```

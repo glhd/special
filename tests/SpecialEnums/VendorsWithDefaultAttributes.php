@@ -2,7 +2,7 @@
 
 namespace Glhd\Special\Tests\SpecialEnums;
 
-use Glhd\Special\DefaultAttributes;
+use Glhd\Special\CreateWith;
 use Glhd\Special\EloquentBacking;
 use Glhd\Special\Tests\Models\Vendor;
 
@@ -10,10 +10,10 @@ enum VendorsWithDefaultAttributes: string
 {
 	use EloquentBacking;
 	
-	#[DefaultAttributes(['name' => 'Best Buy'])]
+	#[CreateWith(['name' => 'Best Buy'])]
 	case BestBuy = 'best-buy';
 	
-	#[DefaultAttributes(['name' => 'Amazon.com'])]
+	#[CreateWith(['name' => 'Amazon.com'])]
 	case Amazon = 'amazon';
 	
 	public function modelClass(): string
