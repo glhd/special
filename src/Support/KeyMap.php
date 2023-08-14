@@ -22,7 +22,7 @@ class KeyMap
 	
 	/**
 	 * Get the primary key of an Eloquent-backed enum.
-	 * 
+	 *
 	 * @param \Glhd\Special\EloquentBacking $enum
 	 * @return string|int
 	 */
@@ -37,7 +37,7 @@ class KeyMap
 	
 	/**
 	 * Clear the key map and cache.
-	 * 
+	 *
 	 * @return bool
 	 */
 	public function clear(): bool
