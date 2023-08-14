@@ -120,6 +120,33 @@ SpecialOrganizations::Laravel->singleton();
 SpecialOrganizations::Laravel->fresh();
 ```
 
+## Using the primary key cache
+
+Often, the only reason you need a special enum is to use its primary key
+in another query or to set up a relationship. Special✨ keeps a cache of
+the 50 most recently-used primary keys so that in many cases, you don't
+have to do a single database lookup. You can configure the number of keys
+cached and the cache TTL by publishing the package config.
+
+```php
+PullRequest::create([
+    'organization_id' => SpecialOrganizations::Laravel->getKey(),
+    'ref_number' => 47785,
+    'title' => '[10.x] Add Collection::enforce() method',
+]);
+```
+
+As long as `SpecialOrganizations::Laravel` has been used in the last hour,
+the `'organization_id'` value can be set without making a single query
+to the database.
+
+Due to the nature of these kinds of enums, this is usually pretty safe,
+since they're used with the types of records that aren't likely to change
+in your application ever. That said, you can always clear the cache
+at any time with `php artisan cache:clear-special-keys`.
+
+## Using with Laravel relations
+
 Often times you want to use a special enum to look up related models. We
 provide a few convenient ways to do this:
 
