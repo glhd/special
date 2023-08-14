@@ -7,7 +7,7 @@
 	</a>
 	<a href="https://codeclimate.com/github/glhd/special/test_coverage" target="_blank">
 		<img 
-			src="https://api.codeclimate.com/v1/badges/423cc29ed6ebf117e656/test_coverage" 
+			src="https://api.codeclimate.com/v1/badges/17364871b7617d29896e/test_coverage" 
 			alt="Coverage Status" 
 		/>
 	</a>
