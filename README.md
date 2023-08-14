@@ -168,3 +168,7 @@ SpecialOrganizations::Laravel
   ->constrain(PullRequests::query())
   ->dumpRawSql();
 ```
+
+The `constrain()` method (and `hasSpecial` macro) both use the primary
+key cache under the hood. This means that most relational queries
+using special enums will not trigger any additional database queries.
