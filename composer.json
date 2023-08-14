@@ -12,6 +12,7 @@
   ],
   "license": "MIT",
   "require": {
+    "php": ">= 8.1",
     "illuminate/support": "^8|^9|^10|dev-master",
     "illuminate/database": "^8|^9|^10|dev-master",
     "ext-json": "*"
