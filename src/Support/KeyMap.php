@@ -6,8 +6,9 @@ use BackedEnum;
 use DateInterval;
 use DateTimeInterface;
 use Illuminate\Contracts\Cache\Repository;
+use Illuminate\Contracts\Support\Arrayable;
 
-class KeyMap
+class KeyMap implements Arrayable
 {
 	protected const CACHE_KEY = 'glhd-special:keymap';
 	
@@ -50,6 +51,11 @@ class KeyMap
 		return false;
 	}
 	
+	public function toArray(): array
+	{
+		return $this->map();
+	}
+	
 	/**
 	 * @param \Glhd\Special\EloquentBacking $enum
 	 * @return string|int
@@ -83,7 +89,7 @@ class KeyMap
 	
 	protected function map(): array
 	{
-		return $this->map ??= $this->cache->get(self::CACHE_KEY, []);
+		return $this->map ??= $this->cache->get(self::CACHE_KEY) ?? [];
 	}
 	
 	protected function getKey(BackedEnum $value): string
