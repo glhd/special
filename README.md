@@ -152,7 +152,7 @@ provide a few convenient ways to do this:
 
 ```php
 PullRequests::query()
-  ->hasSpecial(SpecialOrganizations::Laravel)
+  ->forSpecial(SpecialOrganizations::Laravel)
   ->dumpRawSql();
 
 // select *
@@ -169,6 +169,6 @@ SpecialOrganizations::Laravel
   ->dumpRawSql();
 ```
 
-The `constrain()` method (and `hasSpecial` macro) both use the primary
+The `constrain()` method (and `forSpecial` macro) both use the primary
 key cache under the hood. This means that most relational queries
 using special enums will not trigger any additional database queries.

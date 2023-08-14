@@ -76,7 +76,7 @@ class SpecialEnumTest extends TestCase
 		$this->assertTrue($prices->where('vendor_id', VendorsBySlug::Amazon->getKey())->isEmpty());
 		
 		$prices = Price::query()
-			->hasSpecial(VendorsBySlug::BestBuy)
+			->forSpecial(VendorsBySlug::BestBuy)
 			->get();
 		
 		$this->assertCount(2, $prices);
