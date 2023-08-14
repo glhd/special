@@ -68,7 +68,7 @@ class SpecialEnumTest extends TestCase
 		]);
 		
 		$prices = Price::query()
-			->tap(VendorsBySlug::BestBuy->constrain(...))
+			->tap(fn($query) => VendorsBySlug::BestBuy->constrain($query))
 			->dumpRawSql()
 			->get();
 		
