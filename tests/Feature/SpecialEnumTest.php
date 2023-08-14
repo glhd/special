@@ -69,7 +69,6 @@ class SpecialEnumTest extends TestCase
 		
 		$prices = Price::query()
 			->tap(fn($query) => VendorsBySlug::BestBuy->constrain($query))
-			->dumpRawSql()
 			->get();
 		
 		$this->assertCount(2, $prices);
