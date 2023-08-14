@@ -88,6 +88,7 @@ Now, you can use those enums to access the backing models:
 SpecialOrganizations::Laravel->toArray();
 
 // [
+//   'id' => 1337,
 //   'slug' => 'laravel',
 //   'name' => 'Laravel',
 //   'url' => 'https://laravel.com/',
