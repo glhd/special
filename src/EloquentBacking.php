@@ -4,6 +4,7 @@ namespace Glhd\Special;
 
 use Glhd\Special\Exceptions\BackingModelNotFound;
 use Glhd\Special\Support\KeyMap;
+use Glhd\Special\Support\ModelObserver;
 use Glhd\Special\Support\ValueHelper;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Database\Eloquent\Builder;
@@ -82,6 +83,12 @@ trait EloquentBacking
 			
 			$model = $builder->create($this->attributesForCreation());
 		}
+		
+		// This ensures that if this specific model is updated or deleted,
+		// the singleton instance of it is also cleared.
+		Container::getInstance()
+			->make(ModelObserver::class)
+			->observe($model, $this);
 		
 		return $model;
 	}

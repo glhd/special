@@ -179,4 +179,29 @@ class SpecialEnumTest extends TestCase
 		
 		$this->assertEquals('best-buy', $vendor->slug);
 	}
+	
+	public function test_updating_the_backed_model_clears_the_singleton(): void
+	{
+		$best_buy = VendorsBySlug::BestBuy->get();
+		
+		$best_buy->update(['name' => 'This has been changed']);
+		
+		$best_buy_copy = VendorsBySlug::BestBuy->get();
+		
+		$this->assertEquals('This has been changed', $best_buy_copy->name);
+	}
+	
+	public function test_deleting_the_backed_model_clears_the_singleton(): void
+	{
+		$best_buy = VendorsBySlug::BestBuy->get();
+		$best_buy_key = VendorsBySlug::BestBuy->getKey();
+		
+		$best_buy->delete();
+		
+		$best_buy_copy = VendorsBySlug::BestBuy->get();
+		$best_buy_copy_key = VendorsBySlug::BestBuy->getKey();
+		
+		$this->assertNotEquals($best_buy->getKey(), $best_buy_copy->getKey());
+		$this->assertNotEquals($best_buy_key, $best_buy_copy_key);
+	}
 }

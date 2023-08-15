@@ -32,6 +32,8 @@ class SpecialServiceProvider extends ServiceProvider
 			);
 		});
 		
+		$this->app->singleton(ModelObserver::class);
+		
 		$this->mergeConfigFrom($this->packageConfigFile(), 'glhd-special');
 	}
 	
