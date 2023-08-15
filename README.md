@@ -172,3 +172,29 @@ SpecialOrganizations::Laravel
 The `constrain()` method (and `forSpecial` macro) both use the primary
 key cache under the hood. This means that most relational queries
 using special enums will not trigger any additional database queries.
+
+## Automatic Model Observation
+
+Special✨ automatically registers model observers for any model that
+you retrieve. This means that if you update or delete a special model 
+during a request, subsequent calls to the enum will automatically
+reflect those changes.
+
+This works regardless of whether the updated model was retrieved using
+the package.
+
+```php
+// Get a copy of the Laravel organization, which causes it to be
+// cached for the rest of the request.
+$laravel = SpecialOrganizations::Laravel->singleton();
+assert($laravel->name === 'Laravel');
+
+// Now we'll update it without using our enum
+$org = Organizations::where('slug', 'laravel')->first();
+$org->update(['name' => 'Laravel LLC']);
+
+// Later calls to the enum will reflect the changes
+$laravel = SpecialOrganizations::Laravel->singleton();
+assert($laravel->name === 'Laravel LLC');
+```
+
