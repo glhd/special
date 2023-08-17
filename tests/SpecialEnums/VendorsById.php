@@ -13,7 +13,7 @@ enum VendorsById: int
 	
 	case Amazon = 199;
 	
-	public function modelClass(): string
+	public static function modelClass(): string
 	{
 		return Vendor::class;
 	}

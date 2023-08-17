@@ -84,10 +84,13 @@ class KeyMapTest extends TestCase
 	
 	protected function makeEnum(?string $class = null, ?string $case = null, int|string|null $value = null): array
 	{
-		$namespace = 'TestEnums_'.preg_replace('/\D/', '', microtime(true));
+		static $default_namespace_suffix = 0;
+		static $default_case_suffix = 0;
+		
+		$namespace = 'TestEnums_'.(++$default_namespace_suffix);
 		$class ??= 'TestEnum';
-		$case ??= Str::random();
-		$value ??= random_int(1, PHP_INT_MAX);
+		$case ??= 'Case_'.(++$default_case_suffix);
+		$value ??= $default_case_suffix;
 		$type = get_debug_type($value);
 		
 		$value = var_export($value, true);

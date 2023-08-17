@@ -13,7 +13,7 @@ enum VendorsBySlug: string
 	
 	case Amazon = 'amazon';
 	
-	public function modelClass(): string
+	public static function modelClass(): string
 	{
 		return Vendor::class;
 	}

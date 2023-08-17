@@ -16,7 +16,7 @@ enum VendorsWithDefaultAttributes: string
 	#[CreateWith(['name' => 'Amazon.com'])]
 	case Amazon = 'amazon';
 	
-	public function modelClass(): string
+	public static function modelClass(): string
 	{
 		return Vendor::class;
 	}

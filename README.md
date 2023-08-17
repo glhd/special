@@ -80,7 +80,7 @@ enum SpecialOrganizations: string
 	case Thunk = 'kathunk';
 	
 	// If your enum name is the same as the model name, this is optional.
-	public function modelClass(): string
+	public static function modelClass(): string
 	{
 		return Organization::class;
 	}

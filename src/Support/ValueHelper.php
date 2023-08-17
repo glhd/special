@@ -65,7 +65,7 @@ class ValueHelper
 	protected function factory(): ?Factory
 	{
 		try {
-			$class_name = (string) $this->enum->modelClass();
+			$class_name = (string) $this->enum::modelClass();
 			
 			// TODO: We need to account for `newFactory()` on models, but it's protected...
 			// TODO: But generally overriding `newFactory()` is uncommon, so it's OK to figure this out later

@@ -23,7 +23,7 @@ trait EloquentBacking
 		return $this->forwardCallTo($this->singleton(), $name, $arguments);
 	}
 	
-	public function modelClass(): string
+	public static function modelClass(): string
 	{
 		$basename = Str::of(static::class)->classBasename();
 		$name = $basename->singular();
@@ -108,7 +108,7 @@ trait EloquentBacking
 	 */
 	public function constrain(Builder $query): Builder
 	{
-		$key = $query->getModel()::class === $this->modelClass()
+		$key = $query->getModel()::class === static::modelClass()
 			? $this->model()->getKeyName()
 			: $this->model()->getForeignKey();
 		
@@ -155,13 +155,13 @@ trait EloquentBacking
 	
 	protected function model(): Model
 	{
-		$class_name = $this->modelClass();
+		$class_name = static::modelClass();
 		
 		return new $class_name();
 	}
 	
 	protected function cacheKey(): string
 	{
-		return sprintf('glhd-special:%s:%s', $this->modelClass(), $this->value);
+		return sprintf('glhd-special:%s:%s', static::modelClass(), $this->value);
 	}
 }
