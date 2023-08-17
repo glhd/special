@@ -18,11 +18,9 @@ trait EloquentBacking
 {
 	use ForwardsCalls;
 	
-	public function __call(string $name, array $arguments)
-	{
-		return $this->forwardCallTo($this->singleton(), $name, $arguments);
-	}
-	
+	/**
+	 * @return class-string<Model>
+	 */
 	public static function modelClass(): string
 	{
 		$basename = Str::of(static::class)->classBasename();
@@ -35,6 +33,27 @@ trait EloquentBacking
 		}
 		
 		throw new RuntimeException("Unable to infer model name for '{$basename}' special enum (tried to find a '{$name}' model but could not).");
+	}
+	
+	protected static function model(): Model
+	{
+		$class_name = static::modelClass();
+		
+		return new $class_name();
+	}
+	
+	protected static function getKeyColumn(): string
+	{
+		$value = static::cases()[0]->value;
+		
+		return is_int($value)
+			? config('glhd-special.default_int_key_name', 'id')
+			: config('glhd-special.default_string_key_name', 'slug');
+	}
+	
+	public function __call(string $name, array $arguments)
+	{
+		return $this->forwardCallTo($this->singleton(), $name, $arguments);
 	}
 	
 	/**
@@ -74,7 +93,7 @@ trait EloquentBacking
 	 */
 	public function fresh(): Model
 	{
-		$builder = $this->model()->newQuery();
+		$builder = static::model()->newQuery();
 		
 		if (! $model = $builder->where($this->attributes())->first()) {
 			if (config('glhd-special.fail_when_missing', true)) {
@@ -109,8 +128,8 @@ trait EloquentBacking
 	public function constrain(Builder $query): Builder
 	{
 		$key = $query->getModel()::class === static::modelClass()
-			? $this->model()->getKeyName()
-			: $this->model()->getForeignKey();
+			? static::model()->getKeyName()
+			: static::model()->getForeignKey();
 		
 		return $query->where($key, '=', $this->getKey());
 	}
@@ -118,7 +137,7 @@ trait EloquentBacking
 	protected function attributes(): array
 	{
 		return [
-			$this->getKeyColumn() => $this->valueToAttribute($this->value),
+			static::getKeyColumn() => $this->valueToAttribute($this->value),
 		];
 	}
 	
@@ -133,7 +152,7 @@ trait EloquentBacking
 	
 	protected function values(): array
 	{
-		return Arr::except(ValueHelper::getValuesFor($this), [$this->getKeyColumn()]);
+		return Arr::except(ValueHelper::getValuesFor($this), [static::getKeyColumn()]);
 	}
 	
 	protected function createWith(): array
@@ -141,23 +160,9 @@ trait EloquentBacking
 		return [];
 	}
 	
-	protected function getKeyColumn(): string
-	{
-		return is_int($this->value)
-			? config('glhd-special.default_int_key_name', 'id')
-			: config('glhd-special.default_string_key_name', 'slug');
-	}
-	
 	protected function valueToAttribute($value): mixed
 	{
 		return $value;
-	}
-	
-	protected function model(): Model
-	{
-		$class_name = static::modelClass();
-		
-		return new $class_name();
 	}
 	
 	protected function cacheKey(): string

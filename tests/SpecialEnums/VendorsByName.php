@@ -18,7 +18,7 @@ enum VendorsByName: string
 		return Vendor::class;
 	}
 	
-	protected function getKeyColumn(): string
+	protected static function getKeyColumn(): string
 	{
 		return 'name';
 	}
