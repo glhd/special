@@ -5,7 +5,6 @@ namespace Glhd\Special\Tests\Unit;
 use Glhd\Special\Support\KeyMap;
 use Glhd\Special\Tests\TestCase;
 use Illuminate\Cache\Repository;
-use Illuminate\Support\Str;
 use Mockery;
 
 class KeyMapTest extends TestCase
