@@ -12,10 +12,12 @@ jobs:
 
     strategy:
       matrix:
-        php: [ 8.1, 8.2 ]
-        laravel: [ ^9.0, ^10.0 ]
+        php: [ 8.1, 8.2, 8.3 ]
+        laravel: [ ^9.0, ^10.0, ^11.0 ]
         dependency-version: [ stable, lowest ]
         exclude:
+          - laravel: ^11.0
+            php: 8.1
           - laravel: ^9.0
             dependency-version: lowest
             
@@ -44,20 +46,15 @@ jobs:
             ${{ steps.composer-cache-files-dir.outputs.dir }}
           key: ${{ runner.os }}-composer-${{ hashFiles('composer.json') }}
           restore-keys: |
-            ${{ runner.os }}-composer-
-
-      - name: Set minimum stability
-        run: composer config minimum-stability ${{ matrix.minimum-stability }}
+            ${{ runner.os }}-composer- 
 
       - name: Install dependencies
         env:
           COMPOSER_DISCARD_CHANGES: true
-        run: composer require --no-progress --no-interaction --prefer-dist --update-with-all-dependencies "laravel/framework:${{ matrix.laravel }}"
-
-      - name: Set dependency version
-        env:
-          COMPOSER_DISCARD_CHANGES: true
-        run: composer update --no-progress --no-interaction --prefer-dist --with-all-dependencies --prefer-${{ matrix.dependency-version }}
+        run: |
+          composer config minimum-stability ${{ matrix.minimum-stability }}
+          composer require --no-progress --no-interaction --prefer-dist --update-with-all-dependencies "laravel/framework:${{ matrix.laravel }}"
+          composer update --no-progress --no-interaction --prefer-dist --with-all-dependencies --prefer-${{ matrix.dependency-version }} 
 
       - name: Execute tests
         run: vendor/bin/phpunit
