@@ -22,7 +22,7 @@ trait EloquentBacking
 	public static function preload(self|string|int ...$values): array
 	{
 		if (0 === func_num_args()) {
-			$values = array_map(static fn(BackedEnum $case) => $case->value, static::cases());
+			$values = array_column(static::cases(), 'value');
 		}
 		
 		$values = array_map(static fn($value) => $value instanceof BackedEnum ? $value->value : $value, $values);
