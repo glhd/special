@@ -2,6 +2,7 @@
 
 namespace Glhd\Special;
 
+use BackedEnum;
 use Glhd\Special\Exceptions\BackingModelNotFound;
 use Glhd\Special\Support\KeyMap;
 use Glhd\Special\Support\ModelObserver;
@@ -17,6 +18,34 @@ use RuntimeException;
 trait EloquentBacking
 {
 	use ForwardsCalls;
+	
+	public static function preload(self|string|int ...$values): array
+	{
+		if (0 === func_num_args()) {
+			$values = array_map(static fn(BackedEnum $case) => $case->value, static::cases());
+		}
+		
+		$values = array_map(static fn($value) => $value instanceof BackedEnum ? $value->value : $value, $values);
+		$keys = array_map(static::valueToAttribute(...), $values);
+		
+		$models = static::model()->newQuery()
+			->whereIn(static::getKeyColumn(), $keys)
+			->get()
+			->keyBy(static::getKeyColumn());
+		
+		$container = Container::getInstance();
+		$observer = $container->make(ModelObserver::class);
+		
+		return array_map(static function(string|int $value) use ($models, $container, $observer) {
+			$enum = static::from($value);
+			$model = $models->get($value, static fn() => $enum->createMissing());
+			
+			$container->instance($enum->cacheKey(), $model);
+			$observer->observe($model, $enum);
+			
+			return $enum;
+		}, $values);
+	}
 	
 	/**
 	 * @return class-string<Model>
@@ -49,6 +78,11 @@ trait EloquentBacking
 		return is_int($value)
 			? config('glhd-special.default_int_key_name', 'id')
 			: config('glhd-special.default_string_key_name', 'slug');
+	}
+	
+	protected static function valueToAttribute($value): mixed
+	{
+		return $value;
 	}
 	
 	public function __call(string $name, array $arguments)
@@ -93,15 +127,9 @@ trait EloquentBacking
 	 */
 	public function fresh(): Model
 	{
-		$builder = static::model()->newQuery();
-		
-		if (! $model = $builder->where($this->attributes())->first()) {
-			if (config('glhd-special.fail_when_missing', true)) {
-				throw new BackingModelNotFound($this);
-			}
-			
-			$model = $builder->create($this->attributesForCreation());
-		}
+		$model = static::model()->newQuery()
+			->where($this->attributes())
+			->firstOr(fn() => $this->createMissing());
 		
 		// This ensures that if this specific model is updated or deleted,
 		// the singleton instance of it is also cleared.
@@ -134,10 +162,19 @@ trait EloquentBacking
 		return $query->where($key, '=', $this->getKey());
 	}
 	
+	protected function createMissing(): Model
+	{
+		if (config('glhd-special.fail_when_missing', true)) {
+			throw new BackingModelNotFound($this);
+		}
+		
+		return static::model()->newQuery()->create($this->attributesForCreation());
+	}
+	
 	protected function attributes(): array
 	{
 		return [
-			static::getKeyColumn() => $this->valueToAttribute($this->value),
+			static::getKeyColumn() => static::valueToAttribute($this->value),
 		];
 	}
 	
@@ -158,11 +195,6 @@ trait EloquentBacking
 	protected function createWith(): array
 	{
 		return [];
-	}
-	
-	protected function valueToAttribute($value): mixed
-	{
-		return $value;
 	}
 	
 	protected function cacheKey(): string

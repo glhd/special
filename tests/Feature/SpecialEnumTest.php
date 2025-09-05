@@ -204,4 +204,67 @@ class SpecialEnumTest extends TestCase
 		$this->assertNotEquals($best_buy->getKey(), $best_buy_copy->getKey());
 		$this->assertNotEquals($best_buy_key, $best_buy_copy_key);
 	}
+	
+	public function test_preloading_all_cases(): void
+	{
+		Vendor::forceCreate(['slug' => VendorsBySlug::BestBuy]);
+		Vendor::forceCreate(['slug' => VendorsBySlug::Amazon]);
+		
+		DB::enableQueryLog();
+		
+		VendorsBySlug::preload();
+		
+		$this->assertCount(1, DB::getQueryLog());
+		
+		VendorsBySlug::BestBuy->get();
+		VendorsBySlug::Amazon->get();
+		
+		$this->assertCount(1, DB::getQueryLog());
+	}
+	
+	public function test_preloading_some_cases(): void
+	{
+		Vendor::forceCreate(['slug' => VendorsBySlug::BestBuy]);
+		Vendor::forceCreate(['slug' => VendorsBySlug::Amazon]);
+		
+		DB::enableQueryLog();
+		
+		VendorsBySlug::preload(VendorsBySlug::BestBuy);
+		
+		$this->assertCount(1, DB::getQueryLog());
+		
+		VendorsBySlug::BestBuy->get();
+		
+		$this->assertCount(1, DB::getQueryLog());
+		
+		VendorsBySlug::Amazon->get();
+		
+		$this->assertCount(2, DB::getQueryLog());
+	}
+	
+	public function test_preloading_creates_missing_models_if_configured(): void
+	{
+		config()->set('glhd-special.fail_when_missing', false);
+		DB::enableQueryLog();
+		
+		VendorsBySlug::preload();
+		
+		$this->assertCount(3, DB::getQueryLog());
+		
+		$best_buy = VendorsBySlug::BestBuy->get();
+		$amazon = VendorsBySlug::Amazon->get();
+		
+		$this->assertCount(3, DB::getQueryLog());
+		$this->assertEquals('Best Buy', $best_buy->name);
+		$this->assertEquals('Amazon', $amazon->name);
+	}
+	
+	public function test_preloading_throws_on_missing_models_if_configured(): void
+	{
+		config()->set('glhd-special.fail_when_missing', true);
+		
+		$this->expectException(BackingModelNotFound::class);
+		
+		VendorsBySlug::preload();
+	}
 }
