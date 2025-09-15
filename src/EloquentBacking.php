@@ -128,7 +128,7 @@ trait EloquentBacking
 	public function fresh(): Model
 	{
 		$model = static::model()->newQuery()
-			->where($this->attributes())
+			->where($this->eloquentIdentityAttributes())
 			->firstOr(fn() => $this->createMissing());
 		
 		// This ensures that if this specific model is updated or deleted,
@@ -171,7 +171,7 @@ trait EloquentBacking
 		return static::model()->newQuery()->create($this->attributesForCreation());
 	}
 	
-	protected function attributes(): array
+	protected function eloquentIdentityAttributes(): array
 	{
 		return [
 			static::getKeyColumn() => static::valueToAttribute($this->value),
@@ -181,13 +181,13 @@ trait EloquentBacking
 	protected function attributesForCreation(): array
 	{
 		return array_merge(
-			$this->attributes(),
-			$this->values(),
+			$this->eloquentIdentityAttributes(),
+			$this->eloquentAdditionalAttributes(),
 			$this->createWith(),
 		);
 	}
 	
-	protected function values(): array
+	protected function eloquentAdditionalAttributes(): array
 	{
 		return Arr::except(ValueHelper::getValuesFor($this), [static::getKeyColumn()]);
 	}
