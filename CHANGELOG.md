@@ -5,6 +5,8 @@ format. This project adheres to [Semantic Versioning](https://semver.org/spec/v2
 
 ## [Unreleased]
 
+## [0.12.0] - 2026-03-23
+
 ## [0.11.0] - 2025-09-15
 
 ## [0.10.0] - 2025-09-05
@@ -44,7 +46,8 @@ format. This project adheres to [Semantic Versioning](https://semver.org/spec/v2
 - `Fixed` for any bug fixes. 
 - `Security` in case of vulnerabilities.
 
-[unreleased]: https://github.com/glhd/special/compare/0.11.0...HEAD
+[unreleased]: https://github.com/glhd/special/compare/0.12.0...HEAD
+[0.12.0]: https://github.com/glhd/special/compare/0.11.0...0.12.0
 [0.11.0]: https://github.com/glhd/special/compare/0.10.0...0.11.0
 [0.10.0]: https://github.com/glhd/special/compare/0.9.0...0.10.0
 [0.9.0]: https://github.com/glhd/special/compare/0.8.0...0.9.0
