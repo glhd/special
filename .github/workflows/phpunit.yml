@@ -12,15 +12,20 @@ jobs:
 
     strategy:
       matrix:
-        php: [ 8.2, 8.3, 8.4 ]
-        laravel: [ ^10.0, ^11.0, ^12.0 ]
+        php: [ 8.2, 8.3, 8.4, 8.5 ]
+        laravel: [ 13.*, 12.*, 11.*, 10.* ]
         dependency-version: [ stable, lowest ]
+        exclude:
+          - { laravel: 13.*, php: 8.2 }
+          - { laravel: 11.*, php: 8.5 }
+          - { laravel: 10.*, php: 8.5 }
+          - { laravel: 10.*, php: 8.4 }
             
     name: "${{ matrix.php }} / ${{ matrix.laravel }} (${{ matrix.dependency-version }})"
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -30,26 +35,21 @@ jobs:
           tools: composer:v2
 
       - name: Register composer cache directory
-        id: composer-cache-files-dir
-        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+        id: composer-cache
+        run: |
+          echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT  
 
       - name: Cache dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
-          path: |
-            vendor
-            ${{ steps.composer-cache-files-dir.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ hashFiles('composer.json') }}
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
             ${{ runner.os }}-composer- 
 
       - name: Install dependencies
-        env:
-          COMPOSER_DISCARD_CHANGES: true
         run: |
-          composer config minimum-stability ${{ matrix.minimum-stability }}
-          composer require --no-progress --no-interaction --prefer-dist --update-with-all-dependencies "laravel/framework:${{ matrix.laravel }}"
-          composer update --no-progress --no-interaction --prefer-dist --with-all-dependencies --prefer-${{ matrix.dependency-version }} 
+          composer require --no-interaction --prefer-dist --prefer-${{ matrix.dependency-version }} --update-with-all-dependencies "laravel/framework:${{ matrix.laravel }}"
 
       - name: Execute tests
         run: vendor/bin/phpunit
